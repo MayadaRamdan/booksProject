@@ -5,6 +5,8 @@ import com.example.Book.jasper.service.ExportReportUseCase;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
@@ -18,11 +20,17 @@ public class ReportController {
     private final ExportReportUseCase exportReportUseCase;
 
     @GetMapping
-    public byte[] generateReport(@RequestBody ReportFiltrationCriteria reportFiltrationCriteria)
+    public ResponseEntity<byte[]> generateReport(@RequestBody ReportFiltrationCriteria reportFiltrationCriteria)
             throws JRException, FileNotFoundException {
 
         log.info("ReportController -> generateReport(@RequestBody FilterReport filterReport)");
-        return exportReportUseCase.execute(reportFiltrationCriteria);
+
+        byte[] bytes = exportReportUseCase.execute(reportFiltrationCriteria);
+
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/pdf; charset=UTF-8")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"books-report.pdf\"")
+                .body(bytes);
     }
 
 }
