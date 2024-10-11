@@ -12,20 +12,12 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface BookMapper {
 
-    @Mapping(source = "authorId" ,target = "author.id")
+    @Mapping(source = "authorId", target = "author.id")
     Book toEntity(CreateBookDto createBookDto);
 
+    @Mapping(source = "author.authorName", target = "authorName")
+    List<ListingBookDto> toListOfListingBookDto(List<Book> books);
 
-    @Mapping(source = "author.authorName" , target = "authorName")
-    List<ListingBookDto> toListOfListingBookDto (List<Book> books);
-
-
-
-    @Mapping(source = "authorId" ,target = "author.id")
+    @Mapping(source = "authorId", target = "author.id")
     Book toEntity(UpdateBookDto updateBookDto);
-
-    @Mapping(source = "author.id" , target = "authorId")
-    UpdateBookDto toUpdateBookDto (Book book);
-
-
 }
