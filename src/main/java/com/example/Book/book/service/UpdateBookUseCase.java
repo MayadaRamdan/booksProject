@@ -4,6 +4,7 @@ import com.example.Book.author.entity.Author;
 import com.example.Book.author.repository.AuthorRepo;
 import com.example.Book.book.dto.UpdateBookDto;
 import com.example.Book.book.entity.Book;
+import com.example.Book.book.mapper.BookMapper;
 import com.example.Book.book.repository.BookRepo;
 import com.example.Book.exception.exceptions.AuthorNotExistException;
 import com.example.Book.exception.exceptions.BookNotExistException;
@@ -19,22 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class UpdateBookUseCase {
 
     private final BookRepo bookRepo;
-    private final AuthorRepo authorRepo;
+    private final BookMapper bookMapper;
 
     public void execute(UpdateBookDto updateBookDto) {
+
         log.info("UpdateBookUseCase -> execute");
-
-        Book book = bookRepo.findById(updateBookDto.getId())
-                .orElseThrow(() -> new BookNotExistException("THERE IS NO BOOK WITH THIS ID TO UPDATE IT"));
-
-        Author author = authorRepo.findById(updateBookDto.getAuthorId())
-                .orElseThrow(() -> new AuthorNotExistException("THERE IS NO Author WITH THIS ID"));
-
-        book.setId(updateBookDto.getId());
-        book.setName(updateBookDto.getName());
-        book.setType(updateBookDto.getType());
-        book.setAuthor(author);
-
-        bookRepo.save(book);
+        bookMapper.toEntity(updateBookDto);
+        bookRepo.save(bookMapper.toEntity(updateBookDto));
     }
+
+
 }

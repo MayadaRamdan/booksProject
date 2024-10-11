@@ -2,6 +2,7 @@ package com.example.Book.book.service;
 
 import com.example.Book.book.dto.ListingBookDto;
 import com.example.Book.book.entity.Book;
+import com.example.Book.book.mapper.BookMapper;
 import com.example.Book.book.repository.BookRepo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,20 +19,15 @@ import java.util.stream.Collectors;
 public class FindAllBooksUseCase {
 
     private final BookRepo bookRepo;
+    private final BookMapper bookMapper;
 
     public List<ListingBookDto> execute() {
+
         log.info("FindAllBooksUseCase -> execute");
         List<Book> books = bookRepo.findAll();
+        List<ListingBookDto> listingBookDtos =bookMapper.toListOfListingBookDto(books);
 
-        return books.stream().map(this::map).collect(Collectors.toList());
-    }
-
-    private ListingBookDto map(Book book) {
-        ListingBookDto readBookDto = new ListingBookDto();
-        readBookDto.setName(book.getName());
-        readBookDto.setType(book.getType());
-        readBookDto.setAuthorName(book.getAuthor().getAuthorName());
-        return readBookDto;
+        return listingBookDtos;
     }
 
 }
